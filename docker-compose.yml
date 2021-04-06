@@ -10,16 +10,16 @@ services:
       - 5672:5672
       - 15672:15672
   cms-db:
-    image: mysql/mysql-server:5.7
+    image: mysql:5.7
     container_name: cms-db
     volumes:
       - ./cms-db:/var/lib/mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: cms
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
     expose:
       - "3307"
     ports:
@@ -37,6 +37,21 @@ services:
     depends_on:
       - rabbitmq
       - cms-db
+  order-db:
+    image: mysql:5.7
+    container_name: order-db
+    volumes:
+      - ./order-db:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: order
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    expose:
+      - "3309"
+    ports:
+      - "3309:3306"
   order:
     build: ./order-service
     container_name: order-service
@@ -44,9 +59,10 @@ services:
     volumes:
       - ./order-service/:/usr/src/app/
     ports:
-      - 5000:5000
+      - 8001:5000
     env_file:
       - ./order-service/.env.dev
     depends_on:
       - rabbitmq
+      - order-db
 

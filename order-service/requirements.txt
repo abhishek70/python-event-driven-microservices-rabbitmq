@@ -1,7 +1,9 @@
-click==7.1.2
 Flask==1.1.2
-itsdangerous==1.1.0
-Jinja2==2.11.3
-MarkupSafe==1.1.1
-Werkzeug==1.0.1
+Flask-SQLAlchemy==2.5.1
+SQLAlchemy==1.4.5
+Flask-Migrate==2.7.0
+Flask-Script==2.0.6
+Flask-Cors==3.0.10
+requests==2.25.1
 mysqlclient==2.0.3
+pika==1.1.0
