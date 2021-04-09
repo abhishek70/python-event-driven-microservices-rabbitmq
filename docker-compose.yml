@@ -9,6 +9,26 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+  cms-queue:
+    build: ./cms/app
+    container_name: cms-queue
+    command: ["/usr/src/app/wait-for-rabbitmq.sh", "rabbitmq", "python", "consumer.py"]
+    restart: on-failure
+    env_file:
+      - ./cms/.env.dev
+    depends_on:
+      - rabbitmq
+      - cms-db
+  order-queue:
+    build: ./order-service
+    container_name: order-service-queue
+    command: ["/usr/src/app/wait-for-rabbitmq.sh", "rabbitmq", "python", "consumer.py"]
+    restart: on-failure
+    env_file:
+      - ./order-service/.env.dev
+    depends_on:
+      - rabbitmq
+      - order-db
   cms-db:
     image: mysql:5.7
     container_name: cms-db
@@ -27,6 +47,7 @@ services:
   cms-web:
     build: ./cms/app
     container_name: cms-web
+    restart: on-failure
     command: python manage.py runserver 0.0.0.0:8080
     volumes:
       - ./cms/app/:/usr/src/app/
@@ -55,6 +76,7 @@ services:
   order:
     build: ./order-service
     container_name: order-service
+    restart: on-failure
     command: python manage.py run -h 0.0.0.0
     volumes:
       - ./order-service/:/usr/src/app/

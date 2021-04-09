@@ -15,6 +15,14 @@ then
     echo "MySQL started"
 fi
 
+echo "Waiting for RabbitMQ"
+
+while ! nc -z $RABBITMQ_HOST $RABBITMQ_PORT; do
+  sleep 0.1
+done
+
+echo "RabbitMQ started"
+
 python manage.py create_db
 
 exec "$@"
