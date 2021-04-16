@@ -87,4 +87,17 @@ services:
     depends_on:
       - rabbitmq
       - order-db
-
+  ui-service:
+    build: ./ui-service
+    container_name: ui-service
+    environment:
+      - NODE_ENV=development
+      - API_BASE_URL=http://order:5000
+    ports:
+      - 3000:3000
+    volumes:
+      - ./ui-service:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: on-failure
+    depends_on:
+      - order
